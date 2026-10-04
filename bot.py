@@ -6,8 +6,8 @@ app = Flask(__name__)
 CORS(app)  # Дозволяє сайту стукати на локальний сервер
 
 # Дані твого Telegram-бота
-TOKEN = "ТВОЙ_БОТ_ТОКЕН_ВІД_BOTFATHER"
-CHAT_ID = "ТВІЙ_ТЕЛЕГРАМ_CHAT_ID"  # Сюди прийде повідомлення
+TOKEN = "7257442511:AAFitQTqmOP0N5qK8x_gJvdCl4A6Cyiyguo"
+CHAT_ID = "706354958"  # Сюди прийде повідомлення
 
 @app.route('/send-alert', methods=['POST'])
 def send_alert():
