@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чи підеш зі мною на побачення? 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            padding: 40px 30px;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 520px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            color: #d63384;
+            font-size: 26px;
+            margin-bottom: 25px;
+            font-weight: 800;
+            line-height: 1.3;
+        }
+
+        .gif-container {
+            margin-bottom: 25px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(214, 51, 132, 0.15);
+        }
+
+        .gif-container img {
+            width: 100%;
+            max-height: 240px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            min-height: 70px;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 14px 32px;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        #yesBtn {
+            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            color: white;
+            z-index: 2;
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 12px 25px rgba(255, 65, 108, 0.4);
+        }
+
+        #noBtn {
+            background: #e2e8f0;
+            color: #4a5568;
+            position: absolute;
+            z-index: 5;
+            transition: all 0.15s ease-out;
+        }
+
+        /* Вибір локацій */
+        .locations-screen {
+            display: none;
+            text-align: left;
+        }
+
+        .locations-screen h2 {
+            color: #d63384;
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .location-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 380px;
+            overflow-y: auto;
+            padding-right: 5px;
+            margin-bottom: 20px;
+        }
+
+        .location-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            border-radius: 14px;
+            padding: 8px 12px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        .location-card:hover {
+            border-color: #ff416c;
+            transform: translateY(-2px);
+        }
+
+        .location-card input[type="radio"] {
+            accent-color: #ff416c;
+            width: 18px;
+            height: 18px;
+        }
+
+        .location-card img {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .location-info h3 {
+            font-size: 14px;
+            color: #2d3748;
+            margin-bottom: 2px;
+        }
+
+        .location-info p {
+            font-size: 11px;
+            color: #718096;
+        }
+
+        .confirm-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            color: white;
+            padding: 14px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 65, 108, 0.3);
+        }
+
+        .success-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .success-screen h2 {
+            color: #d63384;
+            font-size: 26px;
+            margin-bottom: 15px;
+        }
+
+        .success-screen p {
+            color: #4a5568;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="mainContainer">
+        <!-- Етап 1: Питання -->
+        <div id="questionScreen">
+            <div class="gif-container">
+                <img src="https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif" alt="Cute bear">
+            </div>
+            <h1>Влад питає: чи підеш зі мною на побачення? 🥺</h1>
+            <div class="buttons" id="buttonArea">
+                <button id="yesBtn" onclick="acceptDate()">Так! 🥰</button>
+                <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">Ні 🙈</button>
+            </div>
+        </div>
+
+        <!-- Етап 2: Вибір місця -->
+        <div class="locations-screen" id="locationsScreen">
+            <h2>Обери місце для нашої зустрічі у Львові ✨</h2>
+            <div class="location-list">
+                <label class="location-card">
+                    <input type="radio" name="loc" value="Львівський музей історії релігії (пл Музейна 1)" checked>
+                    <img src="images/1.jpg" alt="Музей релігії">
+                    <div class="location-info">
+                        <h3>Львівський музей історії релігії</h3>
+                        <p>пл. Музейна, 1</p>
+                    </div>
+                </label>
+
+                <label class="location-card">
+                    <input type="radio" name="loc" value="Музейно-культурний комплекс пивної історії «Львіварня»">
+                    <img src="images/2.jpg" alt="Львіварня">
+                    <div class="location-info">
+                        <h3>«Львіварня»</h3>
+                        <p>Музейно-культурний комплекс пивної історії</p>
+                    </div>
+                </label>
+
+                <label class="location-card">
+                    <input type="radio" name="loc" value="Музей «Арсенал»">
+                    <img src="images/3.jpg" alt="Арсенал">
+                    <div class="location-info">
+                        <h3>Музей «Арсенал»</h3>
+                        <p>Колекція старовинної зброї</p>
+                    </div>
+                </label>
+
+                <label class="location-card">
+                    <input type="radio" name="loc" value="Підземелля Гарнізонного храму свв. апп. Петра і Павла">
+                    <img src="images/4.jpg" alt="Підземелля">
+                    <div class="location-info">
+                        <h3>Підземелля Гарнізонного храму</h3>
+                        <p>свв. апп. Петра і Павла</p>
+                    </div>
+                </label>
+
+                <label class="location-card">
+                    <input type="radio" name="loc" value="Музей 'Львів Стародавній'">
+                    <img src="images/5.jpg" alt="Львів Стародавній">
+                    <div class="location-info">
+                        <h3>Музей «Львів Стародавній»</h3>
+                        <p>Інтерактивна історія міста</p>
+                    </div>
+                </label>
+
+                <label class="location-card">
+                    <input type="radio" name="loc" value="Національний музей у Львові ім. Андрея Шептицького">
+                    <img src="images/6.jpg" alt="Національний музей">
+                    <div class="location-info">
+                        <h3>Національний музей ім. Шептицького</h3>
+                        <p>Шедеври українського мистецтва</p>
+                    </div>
+                </label>
+
+                <label class="location-card">
+                    <input type="radio" name="loc" value="Океанаріум">
+                    <img src="images/7.jpg" alt="Океанаріум">
+                    <div class="location-info">
+                        <h3>Океанаріум</h3>
+                        <p>Захопливий підводний світ</p>
+                    </div>
+                </label>
+            </div>
+            <button class="confirm-btn" onclick="confirmLocation()">Обрати це місце! 💖</button>
+        </div>
+
+        <!-- Етап 3: Фінал -->
+        <div class="success-screen" id="successScreen">
+            <div class="gif-container">
+                <img src="https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif" alt="Happy dance">
+            </div>
+            <h2>Урааа! Чекаю на тебе! 🥰</h2>
+            <p id="selectedChoiceText" style="font-weight: 600; color: #d63384; margin-top: 10px;"></p>
+        </div>
+    </div>
+
+    <script>
+        const noPhrases = [
+            "Ні 🙈",
+            "Ти впевнена? 🥺",
+            "Подумай ще раз! 💖",
+            "Ну будь ласочка! 🌸",
+            "Серце розіб'єш 💔",
+            "Я ж стараюсь! 😭",
+            "Та ти шо, давай «Так»!",
+            "Кнопка «Ні» не працює 😏"
+        ];
+        let phraseIndex = 0;
+
+        function moveButton() {
+            const btn = document.getElementById('noBtn');
+            phraseIndex = (phraseIndex + 1) % noPhrases.length;
+            btn.innerText = noPhrases[phraseIndex];
+
+            const maxX = window.innerWidth - btn.offsetWidth - 50;
+            const maxY = window.innerHeight - btn.offsetHeight - 50;
+            
+            const randomX = Math.max(20, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(20, Math.floor(Math.random() * maxY));
+
+            btn.style.position = 'fixed';
+            btn.style.left = randomX + 'px';
+            btn.style.top = randomY + 'px';
+        }
+
+        function acceptDate() {
+            confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+            document.getElementById('questionScreen').style.display = 'none';
+            document.getElementById('locationsScreen').style.display = 'block';
+        }
+
+        function confirmLocation() {
+            const selectedRadio = document.querySelector('input[name="loc"]:checked');
+            const locationName = selectedRadio ? selectedRadio.value : "романтичне місце";
+
+            confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 } });
+
+            document.getElementById('locationsScreen').style.display = 'none';
+            document.getElementById('successScreen').style.display = 'block';
+            document.getElementById('selectedChoiceText').innerText = `Наша локація: «${locationName}» 🗺️✨`;
+
+            // ВІДПРАВКА ДАНИХ ДО TELEGRAM-БОТА
+            // Заміни нижче 'https:// твій-бекенд / send-alert' на реальний адрес твого бота або вебхука (наприклад, через Render/Python-сервер)
+            fetch('http://localhost:5000/send-alert', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ location: locationName })
+            }).catch(err => console.log("Бот офлайн або на локалхості"));
+        }
+    </script>
+</body>
+</html>
