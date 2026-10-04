@@ -340,7 +340,7 @@
 
             // ВІДПРАВКА ДАНИХ ДО TELEGRAM-БОТА
             // Заміни нижче 'https:// твій-бекенд / send-alert' на реальний адрес твого бота або вебхука (наприклад, через Render/Python-сервер)
-            fetch('https://suffrage-relieve-girdle.ngrok-free.dev -> http://localhost:5000', {
+            fetch('https://suffrage-relieve-girdle.ngrok-free.dev/send-alert', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ location: locationName })
